@@ -1,13 +1,13 @@
 import { Inter } from '@next/font/google'
 import siteMetadata from '@/data/siteMetadata'
 import headerNavLinks from '@/data/headerNavLinks'
-// import Logo from '@/data/logo.svg'
 import Link from './Link'
 import SectionContainer from './SectionContainer'
 import Footer from './Footer'
 import MobileNav from './MobileNav'
 import ThemeSwitch from './ThemeSwitch'
 import { ReactNode } from 'react'
+import { useRouter } from 'next/router'
 
 interface Props {
   children: ReactNode
@@ -18,16 +18,14 @@ const inter = Inter({
 })
 
 const LayoutWrapper = ({ children }: Props) => {
+  const pathName = useRouter().pathname
   return (
     <SectionContainer>
       <div className={`${inter.className} flex h-screen flex-col justify-between font-sans`}>
-        <header className="flex items-center justify-between py-10">
+        <header className="flex items-center justify-between py-8">
           <div>
             <Link href="/" aria-label={siteMetadata.headerTitle}>
               <div className="flex items-center justify-between">
-                <div className="mr-3">
-                  {/* <Logo /> */}
-                </div>
                 {typeof siteMetadata.headerTitle === 'string' ? (
                   <div className="hidden h-6 text-2xl font-semibold sm:block">
                     {siteMetadata.headerTitle}
@@ -44,7 +42,11 @@ const LayoutWrapper = ({ children }: Props) => {
                 <Link
                   key={link.title}
                   href={link.href}
-                  className="p-1 font-medium text-gray-900 dark:text-gray-100 sm:p-4"
+                  className={`p-1 font-medium  sm:p-4 ${
+                    link.href === pathName
+                      ? 'text-primary-500 hover:text-primary-600 dark:hover:text-primary-400 '
+                      : 'text-gray-700 dark:text-gray-100  hover:text-primary-600 dark:hover:text-primary-400 '
+                  }`}
                 >
                   {link.title}
                 </Link>

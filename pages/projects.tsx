@@ -14,7 +14,7 @@ export default function Projects() {
           </h1>
           <p className='text-lg leading-7 text-gray-500 dark:text-gray-400'>Maintaining</p>
         </div>
-        {/* <div className="container py-12">
+        <div className="container py-12">
           <div className="-m-4 flex flex-wrap">
             {projectsData.map((d) => (
               <Card
@@ -23,10 +23,11 @@ export default function Projects() {
                 description={d.description}
                 imgSrc={d.imgSrc}
                 href={d.href}
+                date=''
               />
             ))}
           </div>
-        </div> */}
+        </div>
       </div>
     </>
   )
