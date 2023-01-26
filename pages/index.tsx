@@ -26,9 +26,18 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
       <div className='divide-y divide-gray-200 dark:divide-gray-700'>
         <div className='space-y-2 pt-6 pb-8 md:space-y-5'>
-          <p className='text-lg leading-7 text-gray-500 dark:text-gray-400'>
-            {siteMetadata.description}
-          </p>
+          <Link
+            href={`https://www.books.com.tw/products/0010880847?sloc=main`}
+            aria-label={`Link to books.com`}
+          >
+            {/* <Image
+              alt={'camino-banner'}
+              src={'/static/images/camino-banner.jpg'}
+              className='rounded object-cover object-center'
+              width={2048}
+              height={960}
+            /> */}
+          </Link>
         </div>
         <div className='divide-y divide-gray-200 dark:divide-gray-700'>
           {!posts.length && 'No posts found.'}
