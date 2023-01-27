@@ -9,6 +9,7 @@ import { BlogSEO } from '@/components/SEO'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
+import Category from '@/components/Category'
 
 const postDateTemplate: Intl.DateTimeFormatOptions = {
   weekday: 'long',
@@ -26,7 +27,7 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
-  const { path, date, title, tags } = content
+  const { path, date, title, tags, categories } = content
   const [loadComments, setLoadComments] = useState(false)
 
   return (
@@ -55,8 +56,18 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
           <div className='grid-rows-[auto_1fr] divide-y divide-gray-200 pb-8 dark:divide-gray-700 xl:grid xl:grid-cols-4 xl:gap-x-6 xl:divide-y-0'>
             <div className='divide-gray-200  xl:col-span-3 xl:row-span-2 xl:pb-0'>
               <div className='prose max-w-none pt-10 pb-8 dark:prose-dark'>{children}</div>
+
+              <div className='flex items-center pt-4 pb-1 xl:pt-8'>
+                <h2 className='text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400'>
+                  Category
+                </h2>
+                <div className='ml-2 flex flex-wrap'>
+                  <Category text={categories} />
+                </div>
+              </div>
+
               {tags && (
-                <div className='flex items-center py-4 xl:py-8'>
+                <div className='flex items-center pb-4 xl:pb-8'>
                   <h2 className='text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400'>
                     Tags
                   </h2>

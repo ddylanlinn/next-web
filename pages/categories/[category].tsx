@@ -1,16 +1,17 @@
 import { TagSEO } from '@/components/SEO'
 import siteMetadata from '@/data/siteMetadata'
 import ListLayout from '@/layouts/ListLayout'
-import { getAllTags, allCoreContent } from 'pliny/utils/contentlayer'
+import { allCoreContent } from 'pliny/utils/contentlayer'
 import { InferGetStaticPropsType } from 'next'
 import { allBlogs } from 'contentlayer/generated'
 
+
 export async function getStaticPaths() {
-  const categories = allBlogs
+  const blogs = allBlogs
   return {
-    paths: Object.keys(categories).map((category) => ({
+    paths: blogs.map((blog) => ({
       params: {
-        category,
+        category: blog?.categories || '1',
       },
     })),
     fallback: false,
@@ -21,7 +22,7 @@ export const getStaticProps = async (context) => {
   const categories = context.params.category as string
   const filteredPosts = allCoreContent(
     allBlogs.filter(
-      (post) => post.draft !== true && post.categories
+      (post) => post.draft !== true && post.categories === categories
     )
   )
 
@@ -29,16 +30,13 @@ export const getStaticProps = async (context) => {
 }
 
 export default function Category({ posts, categories }: InferGetStaticPropsType<typeof getStaticProps>) {
-  console.log('🚀 ~ Tag ~ posts', posts)
-  console.log('🚀 ~ Tag ~ categories', categories)
   return (
     <>
-      edwed
-      {/* <TagSEO
-        title={`${category} - ${siteMetadata.title}`}
-        description={`${category} category - ${siteMetadata.author}`}
-      /> */}
-      {/* <ListLayout posts={posts} title={category} /> */}
+      <TagSEO
+        title={`${categories} - ${siteMetadata.title}`}
+        description={`${categories} categories - ${siteMetadata.author}`}
+      />
+      <ListLayout posts={posts} title={`Category: ${categories?.toUpperCase()}`} />
     </>
   )
 }
