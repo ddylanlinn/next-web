@@ -2,21 +2,23 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { formatDate } from 'pliny/utils/formatDate'
 import { CoreContent } from 'pliny/utils/contentlayer'
-import type { Blog } from 'contentlayer/generated'
+import type { Blog, Coding } from 'contentlayer/generated'
 import Link from '@/components/Link'
 import Image from '@/components/Image'
 import Tag from '@/components/Tag'
 import Category from '@/components/Category'
 import siteMetadata from '@/data/siteMetadata'
+import { getAllCategories } from '../lib/getAllCategories'
+import { allBlogs, allCodings } from 'contentlayer/generated'
 
 interface PaginationProps {
   totalPages: number
   currentPage: number
 }
 interface ListLayoutProps {
-  posts: CoreContent<Blog>[]
+  posts: CoreContent<Blog | Coding>[]
   title: string
-  initialDisplayPosts?: CoreContent<Blog>[]
+  initialDisplayPosts?: CoreContent<Blog | Coding>[]
   pagination?: PaginationProps
 }
 
@@ -76,12 +78,43 @@ export default function ListLayout({
   const displayPosts =
     initialDisplayPosts.length > 0 && !searchValue ? initialDisplayPosts : filteredBlogPosts
 
+  const router = useRouter()
+  const urlCategory = router.query.category
+  const displayCategories = title.slice(0, 3) !== 'Tag'
+
+  const pathName = router.pathname
+  const postFrom = pathName === '/blog' ? allBlogs : allCodings
+
+  const categories = getAllCategories(postFrom)
+  const sortedCategories = Object.keys(categories).sort((a, b) => categories[b] - categories[a])
+
   return (
     <>
       <div className='space-y-2 pb-4 md:space-y-5'>
         <h1 className='text-center text-3xl font-semibold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:leading-10 md:text-4xl md:leading-14'>
           {title}
         </h1>
+        {displayCategories && (
+          <div className='flex justify-center'>
+            {sortedCategories.map((category) => {
+              return (
+                <div key={category} className='mb-2 mr-3 '>
+                  <Category text={category} />
+                  <Link
+                    href={`/categories/${category}`}
+                    className='-ml-2 text-sm font-semibold uppercase text-gray-600 dark:text-gray-300'
+                    aria-label={`View posts categories ${category}`}
+                  >
+                    {` (${categories[category]})`}
+                  </Link>
+                  {urlCategory === category && (
+                    <div className=' border-t-2 border-primary-500 hover:border-primary-600 dark:hover:border-primary-400' />
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )}
         <div className='relative'>
           <label>
             <span className='sr-only'>Search articles</span>
@@ -112,12 +145,9 @@ export default function ListLayout({
       <ul>
         {!filteredBlogPosts.length && 'No posts found.'}
         {displayPosts.map((post) => {
-          const { path, date, title, summary, tags, images, categories } = post
+          const { path, date, title, summary, images, categories } = post
           return (
-            <article
-              key={path}
-              className='md:h-50 my-5 flex h-full flex-col md:flex-row'
-            >
+            <article key={path} className='md:h-50 my-5 flex h-full flex-col md:flex-row'>
               <Image
                 alt={images?.[0] || '/static/images/time-machine.jpg'}
                 src={images?.[0] || '/static/images/time-machine.jpg'}
@@ -133,9 +163,6 @@ export default function ListLayout({
                     </Link>
                   </h3>
                   <div className='mt-2 flex flex-wrap'>
-                    {/* {tags.map((tag) => (
-                      <Tag key={tag} text={tag} />
-                    ))} */}
                     <Category text={categories} />
                   </div>
                   <div className='overflow-y-hidden text-ellipsis text-gray-500 line-clamp-3 dark:text-gray-400 '>

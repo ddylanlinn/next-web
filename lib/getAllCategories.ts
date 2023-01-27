@@ -1,9 +1,9 @@
-export async function getAllCategories(data) {
-  const blogs = data
+export function getAllCategories(data) {
+  const posts = data
   const categoryCount = {}
-  blogs.forEach((blog) => {
-    if (blog.categories && blog.draft !== true) {
-      const formattedCategory = blog.categories
+  posts.forEach((post) => {
+    if (post.categories && post.draft !== true) {
+      const formattedCategory = post.categories
       if (formattedCategory in categoryCount) {
         categoryCount[formattedCategory] += 1
       } else {

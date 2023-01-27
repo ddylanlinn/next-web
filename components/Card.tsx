@@ -4,11 +4,11 @@ import Link from '@/components/Link'
 import { formatDate } from 'pliny/utils/formatDate'
 import siteMetadata from '@/data/siteMetadata'
 
-const Card = ({ title, description, imgSrc, href, date }) => {
+const Card = ({ title, description, imgSrc, href, date, type }) => {
   return (
     <div className='h-50 w-full p-4 sm:w-1/2 md:w-1/3'>
       <div className='h-full overflow-hidden rounded-md '>
-        <Link href={`/blog/${href}`} aria-label={`Link to ${title}`} className='relative'>
+        <Link href={`/${type.toLowerCase()}/${href}`} aria-label={`Link to ${title}`} className='relative'>
           <div className='absolute bg-gray-500/50 rounded text-xs px-2 py-1 text-black'>OUTDOOR</div>
           <Image
             alt={title}
@@ -21,7 +21,7 @@ const Card = ({ title, description, imgSrc, href, date }) => {
         <div className='flex h-40 flex-col justify-between py-2'>
           <div className=''>
             <h2 className=' overflow-y-hidden text-ellipsis text-xl font-bold leading-6 tracking-tight line-clamp-2'>
-              <Link href={`/blog/${href}`} aria-label={`Link to ${title}`}>
+              <Link href={`/${type.toLowerCase()}/${href}`} aria-label={`Link to ${title}`}>
                 {title}
               </Link>
             </h2>
@@ -38,7 +38,7 @@ const Card = ({ title, description, imgSrc, href, date }) => {
               {formatDate(date, siteMetadata.locale)}
             </time>
             <Link
-              href={`/blog/${href}`}
+              href={`/${type.toLowerCase()}/${href}`}
               className='text-base font-medium leading-6 text-primary-500 hover:text-primary-600 dark:hover:text-primary-400'
               aria-label={`Link to ${title}`}
             >

@@ -3,15 +3,17 @@ import siteMetadata from '@/data/siteMetadata'
 import ListLayout from '@/layouts/ListLayout'
 import { allCoreContent } from 'pliny/utils/contentlayer'
 import { InferGetStaticPropsType } from 'next'
-import { allBlogs } from 'contentlayer/generated'
+import { allBlogs, allCodings } from 'contentlayer/generated'
 
 
 export async function getStaticPaths() {
   const blogs = allBlogs
+  const coding = allCodings
+  const posts = [...blogs, ...coding]
   return {
-    paths: blogs.map((blog) => ({
+    paths: posts.map((post) => ({
       params: {
-        category: blog?.categories || '1',
+        category: post?.categories || '1',
       },
     })),
     fallback: false,
@@ -20,8 +22,11 @@ export async function getStaticPaths() {
 
 export const getStaticProps = async (context) => {
   const categories = context.params.category as string
+  const blogs = allBlogs
+  const coding = allCodings
+  const posts = [...blogs, ...coding]
   const filteredPosts = allCoreContent(
-    allBlogs.filter(
+    posts.filter(
       (post) => post.draft !== true && post.categories === categories
     )
   )

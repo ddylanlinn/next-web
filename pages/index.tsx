@@ -3,21 +3,23 @@ import { PageSEO } from '@/components/SEO'
 import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import { formatDate } from 'pliny/utils/formatDate'
-import { sortedBlogPost, allCoreContent } from 'pliny/utils/contentlayer'
+import { sortedBlogPost, allCoreContent, sortedCodingPost } from 'pliny/utils/contentlayer'
 import { InferGetStaticPropsType } from 'next'
 import { NewsletterForm } from 'pliny/ui/NewsletterForm'
-import { allBlogs } from 'contentlayer/generated'
+import { allBlogs, allCodings } from 'contentlayer/generated'
 import Image from '@/components/Image'
 import Card from '@/components/Card'
-import type { Blog } from 'contentlayer/generated'
+import type { Blog, Coding } from 'contentlayer/generated'
 
-const MAX_DISPLAY = 9
+const MAX_DISPLAY = 10
 
 export const getStaticProps = async () => {
-  const sortedPosts = sortedBlogPost(allBlogs) as Blog[]
-  const posts = allCoreContent(sortedPosts)
+  const sortedBlogs = sortedBlogPost(allBlogs) as Blog[]
+  const sortedCoding = sortedBlogPost(allCodings) as Coding[]
+  const unSortedPosts = [...sortedBlogs, ...sortedCoding]
+  const posts = allCoreContent(unSortedPosts)
 
-  return { props: { posts } }
+  return { props: { posts} }
 }
 
 export default function Home({ posts }: InferGetStaticPropsType<typeof getStaticProps>) {
@@ -25,18 +27,18 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
     <>
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
       <div className='divide-y divide-gray-200 dark:divide-gray-700'>
-        <div className='space-y-2 pt-6 pb-8 md:space-y-5'>
+        <div className='space-y-2 pb-8 md:space-y-5'>
           <Link
             href={`https://www.books.com.tw/products/0010880847?sloc=main`}
             aria-label={`Link to books.com`}
           >
-            {/* <Image
+            <Image
               alt={'camino-banner'}
               src={'/static/images/camino-banner.jpg'}
               className='rounded object-cover object-center'
               width={2048}
               height={960}
-            /> */}
+            />
           </Link>
         </div>
         <div className='divide-y divide-gray-200 dark:divide-gray-700'>
@@ -52,6 +54,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
                   imgSrc={post.images?.[0]}
                   href={post.slug}
                   date={post.date}
+                  type={post.type}
                 />
               ))}
             </div>

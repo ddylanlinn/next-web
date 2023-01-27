@@ -4,10 +4,11 @@ import ListLayout from '@/layouts/ListLayout'
 import { kebabCase } from 'pliny/utils/kebabCase'
 import { getAllTags, allCoreContent } from 'pliny/utils/contentlayer'
 import { InferGetStaticPropsType } from 'next'
-import { allBlogs } from 'contentlayer/generated'
+import { allBlogs, allCodings } from 'contentlayer/generated'
 
 export async function getStaticPaths() {
-  const tags = await getAllTags(allBlogs)
+  const allPosts = [...allBlogs, ...allCodings]
+  const tags = await getAllTags(allPosts)
 
   return {
     paths: Object.keys(tags).map((tag) => ({
@@ -21,8 +22,9 @@ export async function getStaticPaths() {
 
 export const getStaticProps = async (context) => {
   const tag = context.params.tag as string
+  const allPosts = [...allBlogs, ...allCodings]
   const filteredPosts = allCoreContent(
-    allBlogs.filter(
+    allPosts.filter(
       (post) => post.draft !== true && post.tags.map((t) => kebabCase(t)).includes(tag)
     )
   )
@@ -39,7 +41,7 @@ export default function Tag({ posts, tag }: InferGetStaticPropsType<typeof getSt
         title={`${tag} - ${siteMetadata.title}`}
         description={`${tag} tags - ${siteMetadata.author}`}
       />
-      <ListLayout posts={posts} title={title} />
+      <ListLayout posts={posts} title={`Tag: ${title}`} />
     </>
   )
 }
