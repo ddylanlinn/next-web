@@ -162,13 +162,13 @@ export default function ListLayout({
         {displayPosts.map((post) => {
           const { path, date, title, summary, images, categories } = post
           return (
-            <article key={path} className='md:h-50 my-5 flex h-full flex-col md:flex-row'>
+            <article key={path} className='md:h-50 w-full my-5 flex h-full flex-col md:flex-row'>
               <Image
                 alt={images?.[0] || '/static/images/time-machine.jpg'}
                 src={images?.[0] || '/static/images/time-machine.jpg'}
                 width={300}
                 height={300}
-                className='md:h-50 md:w-50 self-center rounded-sm object-cover object-center'
+                className='h-64 w-full sm:h-72 md:w-60 md:h-40 lg:h-60 lg:w-80 self-center rounded-sm object-cover object-center'
               />
               <div className='flex h-auto w-full flex-col justify-between md:ml-2'>
                 <div>

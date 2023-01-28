@@ -7,13 +7,13 @@ import siteMetadata from '@/data/siteMetadata'
 const Card = ({ title, description, imgSrc, href, date, type, categories }) => {
   return (
     <div className='h-50 w-full p-4 sm:w-1/2 md:w-1/3'>
-      <div className='h-full overflow-hidden rounded-md '>
-        <Link href={`/${type.toLowerCase()}/${href}`} aria-label={`Link to ${title}`} className='relative'>
+      <div className='h-full w-full overflow-hidden rounded-md'>
+        <Link href={`/${type.toLowerCase()}/${href}`} aria-label={`Link to ${title}`} className='relative h-full w-full'>
           <div className='absolute bg-gray-500/50 rounded text-xs px-2 py-1 text-black'>{categories?.toUpperCase()}</div>
           <Image
             alt={title}
             src={imgSrc || '/static/images/time-machine.jpg'}
-            className='object-cover object-center md:h-36 lg:h-48'
+            className='object-cover object-center h-50 w-full sm:h-40 lg:h-60'
             width={600}
             height={400}
           />

@@ -1,0 +1,265 @@
+---
+title: 'GCP 網頁部署（雲端主機選購 + LAMP + MySQL）'
+date: '2021-08-07'
+categories: deploy
+tags: ['GCP', 'deploy']
+draft: false
+images: ['/static/images/gcp-deployment/gce.png']
+summary: '抵制本身就是種如同聲援、抗議等等的表達行為，依照自己的信念而做出的社會行動：某方做出不道德或是不符合期望的行為，且尚未有健全的法源或相應方法加以抗衡下，個人或是集體於體制外做出的不合作運動。'
+layout: PostLayout
+---
+
+![gcp-deployment](/static/images/gcp-deployment/gce.png)
+
+此次部署主要分三階段，購買建置雲端虛擬主機（VM）、建置 Ubuntu 主機環境、MySQL 安裝及連線
+
+---
+## 開始之前可以先大致了解部署流程及簡單系統架構
+
+1. 租用雲端虛擬主機（想像成組一台自己的虛擬電腦 規格自己選配）
+2. 選擇這台主機的執行環境（作業系統）
+3. 在這台虛擬電腦裡建置環境並安裝需要的軟體 
+4. 軟體順利執行並確定遠端連線 檔案上傳 
+5. 測試成功，執行專案
+
+<br/>
+
+### LAMP
+**L**inux 作業系統、**A**pache 網頁伺服器、**M**ySQL 資料庫，**P**HP 程式語言  
+類似的執行環境包括 WAMP（Windows OS）、MAMP（Mac OS）等等，  
+其中在相容及整合性上又以 Linux 作業系統最為穩定安全。
+
+
+而 **Ubuntu** 是基於 Debian 發展而來的 Linux 作業系統。
+**也是這次選擇建置主機的環境系統**。
+<br/>
+
+### GCP（Google Cloud Platform）
+提供眾多服務，類似的部署服務又包含 GCE（Google Compute Engine）、GAE（Google App Engine）、GKE（Google Kubernetes Engine 類似於 Docker 原理此不詳述）
+
+**GCE** 是屬於 IAAS（Infrastructure as a Service），向 Google 買硬體，自己從頭到尾建置主機系統，有極大的調整彈性，但相對的就需要更清楚了解系統環境，AWS Elastic Compute 也屬於這類。
+**也是這次部署的方法**。
+
+**GAE** 是屬於 PAAS（Platform as a Serivce），Google 幫你建置好環境，只管將專案丟上去執行即可。Heroku、AWS Elastic Beanstalk 也屬於這類。
+使用 GAE 可以去連結 Cloud SQL（Google 提供的 MySQL 服務）、Cloud Storage 達成完整的動態網頁部署。  
+[官方文件](https://cloud.google.com/appengine)有測試部署教學。
+
+
+---
+
+
+# 一、購買建置雲端虛擬主機（VM）
+有綁定帳單的 Google 帳號即可使用 GCP 服務
+
+
+### 1.建立新專案
+![image](https://user-images.githubusercontent.com/82143007/126066705-f08c91e2-b138-4643-8a0a-212b584af1ce.png)
+
+### 2.選購虛擬主機及作業系統
+
+
+左上 `導覽選單` > `Marketplace` > 下滑至作業系統列 選擇 `Ubuntu` 
+
+（若直接建置 Compute Engine VM 執行個體，系統設定的映象檔會是 Debian，一樣可以建置 LAMP，但會與以下的指令操作不同）
+<br/>
+![image](https://user-images.githubusercontent.com/82143007/126067355-7ae1ff20-3104-41c3-8dea-11c9b2c34a10.png)
+
+<br/>
+
+若是第一次使用 GCP，Google 有提供 300 美金的折抵金，足夠選用基礎專案折抵費用達一年。 
+而 Google 有另外提拱永久 [免費專案](https://cloud.google.com/free/docs/gcp-free-tier/?hl=zh-TW)，在[一定的硬體規格及使用限制下](https://cloud.google.com/free/docs/gcp-free-tier/?hl=zh-TW#free-tier-usage-limits) 可以永久免費的使用 GCP。
+
+
+#### 1.設定 VM 名稱
+
+#### 2.設定主機區域
+可以選擇 `asia-east1` 台灣的機房，靠近機房傳輸速度較快。
+若以永久免費方案的限制下，只可選擇 `us-east1`、`us-west1` 和 `us-central1` 
+
+#### 3.設定硬體規格
+若選擇最基礎陽春的規格 `系列 N1` `類型 f1-micro` 可以永久完全免費
+但等等要設定 LAMP 環境及安裝 phpmyadmin 會跑太久，先選擇稍微多一點點核心跟記憶體的規格
+多少 CPU 及記憶體可以完全客製化且可以隨時修改，右上有費用估算
+（ex. 試用一個月 若覺得 CPU 記憶體實際使用的資源效能太高或太低 ，則可以考慮調整，需求多少選配多少）
+
+#### 4.勾選HTTP/HTTPS
+
+
+![image](https://user-images.githubusercontent.com/82143007/126069643-3cc21eba-4347-4d50-a055-d281261cb93d.png)
+![image](https://user-images.githubusercontent.com/82143007/126069662-133e4458-0914-4c1d-ad31-d99505a8a3cf.png)
+
+### 3.設置靜態 IP 及防火牆
+
+1.`導覽選單` >` VPC 網路` > `外部 IP 位置`  > 將該 VM 的類型從暫時改為`靜態`
+
+![image](https://user-images.githubusercontent.com/82143007/126070588-a00ec9a3-86a5-4b97-b7b1-e0d7483dacca.png)
+
+
+2.點選左側`防火牆` > 上方`建立防火牆規則` 
+
+IP 來源設置 `0.0.0.0/0`（允許所有範圍），tcp 設定 `3306` （MySQL連結埠）
+
+![image](https://user-images.githubusercontent.com/82143007/126074120-bb4e18aa-d2fb-4ab3-84d0-15f5a42dd971.png)
+
+
+
+---
+
+# 二、建置 Ubuntu 主機環境
+
+### 藉由 SSH 連線至主機進行相關操作
+
+SSH連線至GCP VM 有三種方法，建議三種方法都實際操作使用
+
+1.GCP 內建的 SSH 瀏覽器環境，功能優化齊全，還可以上傳下載檔案 使用體驗佳，
+不用另外安裝且免用金鑰 出門在外任何電腦都可以馬上連線，缺點是在自己電腦內頻繁使用 需要再進入 GCP 且使用每次連線等待時間稍嫌麻煩
+
+2.下載並安裝 [Google Cloud SDK ](https://cloud.google.com/sdk/docs/install) 執行 SSH 連線，優點：金鑰自動夾帶、桌面化程式連線速度快。
+
+3.[使用 CMD 或其他 terminal](https://cloud.google.com/compute/docs/instances/connecting-advanced#linux-and-macos)，`ssh -i PATH_TO_PRIVATE_KEY USERNAME@EXTERNAL_IP`，要先設置金鑰檔案，優點：桌面化程式操作介面統一。
+
+
+<br/>
+
+回到 `Compute Engine` 點選要執行的 VM 的 `SSH`
+
+![image](https://user-images.githubusercontent.com/82143007/126071448-6a53166a-4985-4cc8-b923-197920161cce.png)
+
+
+進入 GCP 內建的 SSH 瀏覽器環境，可以看到 VM名稱、VM 的使用狀態、使用者等等資訊
+
+![image](https://user-images.githubusercontent.com/82143007/126071539-0487dc5d-6698-4edf-83cb-8d3bc24ace77.png)
+
+
+#### 1.檢查系統並更新
+`sudo apt update && sudo apt upgrade`
+
+sudo 是以系統身分執行，apt 是套件管理工具，都是 linux 常見的指令
+
+#### 2.安裝 Tasksel
+`sudo apt install tasksel`
+
+Tasksel 是一款方便創建、刪除、修改執行各項任務的軟體工具
+
+#### 3.用 Tasksel 下載 lamp-server
+
+`sudo tasksel install lamp-server`
+
+
+安裝設定完成後，就可以在瀏覽器網址列中輸入 `Compute Engine` 頁面中的該 VM  `外部 IP` ，靜態網頁部署成功
+<br/>
+
+![image](https://user-images.githubusercontent.com/82143007/126072528-a99d0230-0fa4-4acc-90d8-32b9adea1834.png)
+
+
+---
+
+# 三、MySQL 安裝及連線設定
+
+### 1.MySQL 安裝設定可以參考
+[部署 AWS EC2 遠端主機 + Ubuntu LAMP 環境 + phpmyadmin](https://github.com/Lidemy/mentor-program-2nd-yuchun33/issues/15)
+[安裝 LAMP Server + phpMyAdmin 在 Linux 系統上輕鬆架設網站](https://magiclen.org/lamp/)
+
+
+
+> 若有碰到相同的檔案在本地端的伺服器能跑，但在虛擬主機上卻不能
+> 可能關係到 PHP 設定檔的不同 或是其他未顯示的錯誤狀況
+> 
+> 可以到此路徑的檔案去看錯誤訊息 debug
+> `/var/log/mysql/error.log`
+> 
+> 針對不同問題可以進到這路徑的檔案修改
+> `/etc/php/7.2/apache2/php.ini`
+
+
+
+### 2.設定防火牆及連接埠
+phpmyadmin 安裝好後即可使用瀏覽器登入操作資料庫，
+但若是要使用其他資料庫軟體連線，仍須設定主機防火牆，防火牆設定可以參考
+[一小時完成 VPS (Virtual Private Server) 部署 ](https://github.com/Lidemy/mentor-program-2nd-futianshen/issues/21)
+[如何遠端連接虛擬主機上的 mySQL 資料庫](https://github.com/Lidemy/mentor-program-2nd-futianshen/issues/33)
+
+
+> #### 以最高權限 root 執行
+> `sudo su`   
+> 若要跳出 輸入 `exit` or `ctrl + D`
+> 
+> #### 測試連接埠開通與否
+> `telnet 外部IP 測試連接埠`
+> 如 `telnet 35.11.22.33 3306` 測試MySQL連接埠是否開通
+
+
+
+
+### 3.使用 FileZilla 上傳檔案
+金鑰產生及連結GCP可參考
+[[GCP] Upload file via SFTP](https://medium.com/@milly16chien/gcp-upload-file-via-sftp-d57e28c3db57)
+
+進去後，網站前端顯示的檔案會放在根目錄的 `/var/www/html` ，所有部署就大功告成 🎉🎉🎉
+
+
+_此時若沒有權限編輯移動`/var/www/html` 中檔案，[有幾種方式可以解決](https://www.siteyaar.com/fix-sftp-ftp-permission-denied-on-google-cloud/)
+更改資料夾或是檔案的權限
+`sudo stat -c %a  /var/www/html` 查看權限
+`sudo chmod 777 /var/www/html` 將權限更改為最高 777 （會有資安疑慮）_
+
+
+---
+
+## 另一種 SSH 連線方式： Google Cloud SDK 
+
+下載 [Google Cloud SDK](https://cloud.google.com/sdk/docs/install)
+詳細操作可以參考 [[GCloud] 使用 gcloud 連線到 Google Cloud Platform 上的 VM](https://ephrain.net/gcp-%E4%BD%BF%E7%94%A8-gcloud-%E9%80%A3%E7%B7%9A%E5%88%B0-google-cloud-platform-%E4%B8%8A%E7%9A%84-vm/)
+
+
+![image](https://user-images.githubusercontent.com/82143007/126097057-66ed1e1b-e936-4a0f-aa98-a5864b4a5cd3.png)
+
+使用 Google Cloud SDK SSH 連線時，會以`本機端的使用者身分`進入主機
+本機端或其他連線、瀏覽器連線都是以各自的使用者身分進入主機、預設情形下使用者的權限互不相干擾
+
+
+
+Google Cloud SDK 會自動連網到瀏覽器做身分確認
+並且會在 `~/.ssh` 目錄下自動生成公私鑰 `google_compute_engine`（且自動聯動主機）
+
+若有這個金鑰，使用 FileZilla SFTP 連線時
+就不用另外下載使用 PuTTYgen 另外生成金鑰、手動設定 GCP 中繼資料，直接夾帶 `~/.ssh` 目錄下自動生成的金鑰即可登入（使用者記得改成本地端的使用者名稱）
+![image](https://user-images.githubusercontent.com/82143007/126096597-aa74c425-df2d-43c3-af70-ca533c9e500d.png)
+
+
+### 也可以藉由這個自動生成的金鑰，使用其他 terminal SSH 連線至主機
+`ssh -i PATH_TO_PRIVATE_KEY EXTERNAL_IP`
+輸入 `ssh -i 金鑰檔案 外部IP` 即可連線至主機
+
+
+![image](https://user-images.githubusercontent.com/82143007/126098366-5dc632b8-290e-4321-8f09-111ca45e7052.png)
+
+
+
+---
+
+### 參考資料
+[Google雲端平台　實戰架設LAMP網站主機](https://www.netadmin.com.tw/netadmin/zh-tw/technology/5FEBB2D3B5AB436287D6163301353045?page=1)
+[我的GCP學習日誌 LAMP 安裝方式](https://98goto.com/bitblog/blog/2020/02/27/%E6%88%91%E7%9A%84gcp%E5%AD%B8%E7%BF%92%E6%97%A5%E8%AA%8C-part-2-lamp/)
+[Google Cloud Platform 架站轉移教學](https://hackmd.io/@Rance/HkFm0vzZX)
+
+[GCP-Rails與GCE、GAE、GKE](https://weilihmen.medium.com/gcp-rails%E8%88%87gce-gae-gke-a6c8dbd00c16)
+[Iaas、Pass、Saas](https://dotblogs.com.tw/007_Lawrence/2017/08/21/155203)
+
+[[GCP] Upload file via SFTP](https://medium.com/@milly16chien/gcp-upload-file-via-sftp-d57e28c3db57)
+[[GCloud] 使用 gcloud 連線到 Google Cloud Platform 上的 VM](https://ephrain.net/gcp-%E4%BD%BF%E7%94%A8-gcloud-%E9%80%A3%E7%B7%9A%E5%88%B0-google-cloud-platform-%E4%B8%8A%E7%9A%84-vm/)
+[【筆記】解決GCP VM無法SSH的問題](https://yflife.net/%E8%A7%A3%E6%B1%BAgcp-vm%E7%84%A1%E6%B3%95ssh%E7%9A%84%E5%95%8F%E9%A1%8C/)
+[Google Cloud Platform雲端主機！SFTP金鑰產生與連線設定教學(FileZilla)](https://www.minwt.com/website/server/17377.html)
+[Google Cloud Platform(GCP) MySQL Workbench 連線設定](https://allen-fjl.blogspot.com/2017/12/google-cloud-platformgcp-mysql-workbench.html)
+[Google Cloud CLI & SDK Setup](https://www.codingforentrepreneurs.com/blog/google-cloud-cli-and-sdk-setup)
+[3 Ways to Solve Sftp or Ftp "Permission denied" on Google Cloud](https://www.siteyaar.com/fix-sftp-ftp-permission-denied-on-google-cloud/)
+
+[Connecting from App Engine standard environment to Cloud SQL](https://cloud.google.com/sql/docs/mysql/connect-app-engine-standard)
+[[Day-41] Google Cloud Platform(3)-建立SQL雲端資料庫](https://ithelp.ithome.com.tw/articles/10197683)
+[筆記-於GCP上建立Mysql-server](https://dotblogs.com.tw/taunote/2017/06/22/gcp_sql_setup)
+
+[部署 AWS EC2 遠端主機 + Ubuntu LAMP 環境 + phpmyadmin](https://github.com/Lidemy/mentor-program-2nd-yuchun33/issues/15)
+[一小時完成 VPS (Virtual Private Server) 部署](https://github.com/Lidemy/mentor-program-2nd-futianshen/issues/21)
+[如何遠端連接虛擬主機上的 mySQL 資料庫](https://github.com/Lidemy/mentor-program-2nd-futianshen/issues/33)
+[ 紀錄  部屬 AWS EC2 雲端主機 + LAMP Server + phpMyAdmin](https://mtr04-note.coderbridge.io/2020/09/15/-%E7%B4%80%E9%8C%84-%08-%E9%83%A8%E5%B1%AC-aws-ec2-%E9%9B%B2%E7%AB%AF%E4%B8%BB%E6%A9%9F-/)
+
