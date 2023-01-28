@@ -1,5 +1,6 @@
 {
   "name": "starter-blog",
+  "homepage": "https://ddylanlin.github.io/next-web",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -8,7 +9,9 @@
     "build": "INIT_CWD=$PWD next build && cross-env NODE_OPTIONS='--experimental-json-modules' node -r esbuild-register ./scripts/postbuild.mjs",
     "serve": "next start",
     "analyze": "cross-env ANALYZE=true next build",
-    "lint": "next lint --fix --dir pages --dir components --dir lib --dir layouts --dir scripts"
+    "lint": "next lint --fix --dir pages --dir components --dir lib --dir layouts --dir scripts",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "browser": {
     "fs": false,
@@ -24,6 +27,7 @@
     "contentlayer": "0.2.8",
     "esbuild": "0.14.38",
     "fs": "^0.0.1-security",
+    "gh-pages": "^5.0.0",
     "github-slugger": "^1.4.0",
     "gray-matter": "^4.0.2",
     "image-size": "1.0.0",

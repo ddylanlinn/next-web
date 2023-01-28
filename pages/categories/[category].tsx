@@ -35,6 +35,7 @@ export const getStaticProps = async (context) => {
 }
 
 export default function Category({ posts, categories }: InferGetStaticPropsType<typeof getStaticProps>) {
+  if (!posts) return
   return (
     <>
       <TagSEO

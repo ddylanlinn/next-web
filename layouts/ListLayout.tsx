@@ -86,12 +86,12 @@ export default function ListLayout({
   const codingCategories = ['guide']
 
   const pathName = router.pathname
-  const category = pathName === '/categories/[category]' && router.query.category
-  const blogCategory= blogCategories.some(item => category.includes(item))
-  const codingCategory = codingCategories.some(item => category.includes(item))
   
   let postFrom
   if (pathName === '/categories/[category]') {
+    const category = pathName === '/categories/[category]' && router.query.category
+    const blogCategory= blogCategories.some(item => category.includes(item))
+    const codingCategory = codingCategories.some(item => category.includes(item))
     if (blogCategory) postFrom = allBlogs
     if (codingCategory) postFrom = allCodings
   } else if (pathName === '/blog') {
@@ -101,7 +101,7 @@ export default function ListLayout({
   }  
 
   const categories = getAllCategories(postFrom)
-  const sortedCategories = Object.keys(categories).sort((a, b) => categories[b] - categories[a])
+  const sortedCategories = categories && Object.keys(categories).sort((a, b) => categories[b] - categories[a])
 
   return (
     <>
@@ -111,7 +111,7 @@ export default function ListLayout({
         </h1>
         {displayCategories && (
           <div className='flex justify-center'>
-            {sortedCategories.map((category) => {
+            {sortedCategories?.map((category) => {
               return (
                 <div key={category} className='mb-2 mr-3 '>
                   <Category text={category} />
