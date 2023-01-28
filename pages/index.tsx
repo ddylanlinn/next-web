@@ -55,6 +55,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
                   href={post.slug}
                   date={post.date}
                   type={post.type}
+                  categories={post.categories}
                 />
               ))}
             </div>

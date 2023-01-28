@@ -82,8 +82,23 @@ export default function ListLayout({
   const urlCategory = router.query.category
   const displayCategories = title.slice(0, 3) !== 'Tag'
 
+  const blogCategories = ['outdoor', 'inspired']
+  const codingCategories = ['guide']
+
   const pathName = router.pathname
-  const postFrom = pathName === '/blog' ? allBlogs : allCodings
+  const category = pathName === '/categories/[category]' && router.query.category
+  const blogCategory= blogCategories.some(item => category.includes(item))
+  const codingCategory = codingCategories.some(item => category.includes(item))
+  
+  let postFrom
+  if (pathName === '/categories/[category]') {
+    if (blogCategory) postFrom = allBlogs
+    if (codingCategory) postFrom = allCodings
+  } else if (pathName === '/blog') {
+    postFrom = allBlogs
+  } else if (pathName === '/coding') {
+    postFrom = allCodings
+  }  
 
   const categories = getAllCategories(postFrom)
   const sortedCategories = Object.keys(categories).sort((a, b) => categories[b] - categories[a])
@@ -187,3 +202,4 @@ export default function ListLayout({
     </>
   )
 }
+
