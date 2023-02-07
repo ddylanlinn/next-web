@@ -82,7 +82,7 @@ export default function ListLayout({
   const urlCategory = router.query.category
   const displayCategories = title.slice(0, 3) !== 'Tag'
 
-  const blogCategories = ['outdoor', 'inspired', 'camino', 'life', 'thought']
+  const blogCategories = ['travel', 'inspired', 'camino', 'life', 'thought']
   const codingCategories = ['guide']
 
   const pathName = router.pathname
