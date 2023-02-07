@@ -42,7 +42,7 @@ export default function Category({ posts, categories }: InferGetStaticPropsType<
         title={`${categories} - ${siteMetadata.title}`}
         description={`${categories} categories - ${siteMetadata.author}`}
       />
-      <ListLayout posts={posts} title={`Category: ${categories?.toUpperCase()}`} />
+      <ListLayout posts={posts} title={`${categories?.toUpperCase()}`} />
     </>
   )
 }
