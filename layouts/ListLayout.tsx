@@ -82,7 +82,7 @@ export default function ListLayout({
   const urlCategory = router.query.category
   const displayCategories = title.slice(0, 3) !== 'Tag'
 
-  const blogCategories = ['outdoor', 'inspired']
+  const blogCategories = ['outdoor', 'inspired', 'camino', 'life', 'thought']
   const codingCategories = ['guide']
 
   const pathName = router.pathname
@@ -113,17 +113,17 @@ export default function ListLayout({
           <div className='flex justify-center'>
             {sortedCategories?.map((category) => {
               return (
-                <div key={category} className='mb-2 mr-3 '>
+                <div key={category} className='mb-2 mr-3'> 
                   <Category text={category} />
-                  <Link
+                  {/* <Link
                     href={`/categories/${category}`}
                     className='-ml-2 text-sm font-semibold uppercase text-gray-600 dark:text-gray-300'
                     aria-label={`View posts categories ${category}`}
                   >
                     {` (${categories[category]})`}
-                  </Link>
+                  </Link> */}
                   {urlCategory === category && (
-                    <div className=' border-t-2 border-primary-500 hover:border-primary-600 dark:hover:border-primary-400' />
+                    <div className='w-full border-t-2 border-primary-500 hover:border-primary-600 dark:hover:border-primary-400' />
                   )}
                 </div>
               )

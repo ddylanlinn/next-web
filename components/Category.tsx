@@ -8,7 +8,7 @@ const Category = ({ text }: Props) => {
   return (
     <Link
       href={`/categories/${text}`} 
-      className="mr-3 text-sm font-medium uppercase text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+      className="text-sm font-medium uppercase text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
     >
       {text?.toUpperCase()}
     </Link>
