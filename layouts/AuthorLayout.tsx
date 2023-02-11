@@ -1,4 +1,5 @@
 import { ReactNode } from 'react'
+import siteMetadata from '@/data/siteMetadata'
 import type { Authors } from 'contentlayer/generated'
 import SocialIcon from '@/components/social-icons'
 import Image from '@/components/Image'
@@ -14,7 +15,7 @@ export default function AuthorLayout({ children, content }: Props) {
 
   return (
     <>
-      <PageSEO title={`About - ${name}`} description={`About me - ${name}`} />
+      <PageSEO title={`${siteMetadata.title} - About`} description={`${siteMetadata.title} - About`} />
       <div className='divide-y divide-gray-200 dark:divide-gray-700'>
         <div className='space-y-2 pb-4 md:space-y-5'>
           <h1 className='text-center text-3xl font-semibold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:leading-10 md:text-4xl md:leading-14'>

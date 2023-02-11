@@ -10,7 +10,7 @@ const components = {
   facebook: Facebook,
 }
 
-const SocialIcon = ({ kind, href, size = 6 }) => {
+const SocialIcon = ({ kind, href, size = 25 }) => {
   if (!href || (kind === 'mail' && !/^mailto:\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/.test(href)))
     return null
 
@@ -18,14 +18,15 @@ const SocialIcon = ({ kind, href, size = 6 }) => {
 
   return (
     <a
-      className='text-sm text-gray-500 transition hover:text-gray-600'
+      className='text-sm text-gray-500  hover:text-gray-600'
       target='_blank'
       rel='noopener noreferrer'
       href={href}
     >
-      <span className='sr-only'>{kind}</span>
       <SocialSvg
-        className={`fill-current text-gray-700 hover:text-blue-500 dark:text-gray-200 dark:hover:text-blue-400 h-${size} w-${size}`}
+        width={size} 
+        height={size}
+        className={`fill-current text-gray-700 hover:text-blue-500 dark:text-gray-200 dark:hover:text-blue-400`}
       />
     </a>
   )

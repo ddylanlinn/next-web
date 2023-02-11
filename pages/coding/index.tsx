@@ -32,7 +32,7 @@ export default function CodingPage({
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
-      <PageSEO title={`Coding - ${siteMetadata.author}`} description={siteMetadata.description} />
+      <PageSEO title={`${siteMetadata.title} - Coding`} description={siteMetadata.description} />
       <ListLayout
         posts={posts}
         initialDisplayPosts={initialDisplayPosts}
