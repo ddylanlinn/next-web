@@ -11,7 +11,7 @@ import Image from '@/components/Image'
 import Card from '@/components/Card'
 import type { Blog, Coding } from 'contentlayer/generated'
 
-const MAX_DISPLAY = 9
+const MAX_DISPLAY = 27
 
 export const getStaticProps = async () => {
   const sortedBlogs = sortedBlogPost(allBlogs) as Blog[]

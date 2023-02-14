@@ -1,5 +1,5 @@
 import { useState, ReactNode } from 'react'
-import { Comments } from 'pliny/comments'
+// import { Comments } from 'pliny/comments'
 import { CoreContent } from 'pliny/utils/contentlayer'
 import type { Blog, Authors } from 'contentlayer/generated'
 import Link from '@/components/Link'
@@ -10,6 +10,7 @@ import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 import Category from '@/components/Category'
+import Comment from '@/components/Comment'
 
 const postDateTemplate: Intl.DateTimeFormatOptions = {
   weekday: 'long',
@@ -89,6 +90,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                   {loadComments && <Comments commentsConfig={siteMetadata.comments} slug={slug} />}
                 </div>
               )} */}
+              {/* <Comment /> */}
             </div>
             <footer>
               <div className='divide-gray-200 text-sm font-medium leading-5 dark:divide-gray-700 xl:col-start-1 xl:row-start-2 xl:divide-y'>

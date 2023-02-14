@@ -23,7 +23,7 @@ export default function AuthorLayout({ children, content }: Props) {
           </h1>
         </div>
         <div className='md:flex-raw items-start space-y-2 md:flex md:space-y-0'>
-          <div className='flex flex-col items-center space-x-2 pt-10'>
+          <div className='flex flex-col items-center space-x-2 pt-10 md:w-1/4'>
             <Image
               src={avatar}
               alt='avatar'
@@ -37,7 +37,7 @@ export default function AuthorLayout({ children, content }: Props) {
               <SocialIcon kind='mail' href={`mailto:${email}`} />
             </div>
           </div>
-          <div className='prose ml-10 max-w-none self-center py-8 dark:prose-dark md:col-span-2'>
+          <div className='prose ml-10 max-w-none md:w-3/4 self-center py-8 dark:prose-dark md:col-span-2'>
             {children}
           </div>
         </div>

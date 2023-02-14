@@ -21,7 +21,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
       <Vercel_Analytics/>
-      <Analytics analyticsConfig={siteMetadata.analytics} />
+      {/* <Analytics analyticsConfig={siteMetadata.analytics} /> */}
       <LayoutWrapper>
         <SearchProvider searchConfig={siteMetadata.search}>
           <Component {...pageProps} />
