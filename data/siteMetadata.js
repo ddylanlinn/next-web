@@ -13,12 +13,12 @@ const siteMetadata = {
   siteLogo: '',
   image: '/static/images/avatar.png',
   socialBanner: '/static/images/twitter-card.png',
-  email: 'silence469@gmail.com',
-  github: 'https://github.com',
+  email: 'ddylanlinn@gmail.com',
+  github: 'https://github.com/ddylanlin',
   twitter: 'https://twitter.com/Twitter',
   facebook: 'https://facebook.com',
   youtube: 'https://youtube.com',
-  linkedin: 'https://www.linkedin.com',
+  linkedin: 'https://www.linkedin.com/in/dylan-ch-lin-012b76267',
   locale: 'en-US',
   analytics: {
     // If you want to use an analytics provider you have to add it to the
