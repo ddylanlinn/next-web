@@ -3,6 +3,23 @@ import { supabase } from '@/lib/supabase/server'
 
 const handler = async (req, res) => {
   // console.log(`🟢 :`, )
+
+  await fetch('https://hooks.slack.com/services/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', {
+    method: 'POST',
+    body: JSON.stringify({
+      blocks: [
+        {
+          type: 'header',
+          text: {
+            type: 'plain_text',
+            text: 'This is Respond!',
+            emoji: true,
+          },
+        },
+      ],
+    }),
+  })
+
   res.status(200).json({ message: 'Hello from Next.js!' });
   return
   const formData = await req.formData()
