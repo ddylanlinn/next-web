@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase/server'
 const handler = async (req, res) => {
   // console.log(`🟢 :`, )
 
-  await fetch('https://hooks.slack.com/services/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', {
+  await fetch(process.env.SLACK_WEBHOOK_URL_1, {
     method: 'POST',
     body: JSON.stringify({
       blocks: [

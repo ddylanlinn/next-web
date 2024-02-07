@@ -63,6 +63,8 @@ module.exports = () => {
     env: {
       SUPABASE_URL: process.env.SUPABASE_URL,
       SUPABASE_KEY: process.env.SUPABASE_KEY,
+      SLACK_WEBHOOK_URL: process.env.SLACK_WEBHOOK_URL,
+      SLACK_WEBHOOK_URL_1: process.env.SLACK_WEBHOOK_URL_1,
     },
     reactStrictMode: true,
     pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],

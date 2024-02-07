@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
   if (error) return res.status(500).json(error)
 
-  await fetch('https://hooks.slack.com/services/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', {
+  await fetch(process.env.SLACK_WEBHOOK_URL, {
     method: 'POST',
     body: JSON.stringify({
       blocks: [
