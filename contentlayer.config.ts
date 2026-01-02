@@ -44,7 +44,7 @@ export const Blog = defineDocumentType(() => ({
   fields: {
     title: { type: 'string', required: true },
     date: { type: 'date', required: true },
-    categories: { type: 'string'},
+    categories: { type: 'string' },
     tags: { type: 'list', of: { type: 'string' } },
     lastmod: { type: 'date' },
     draft: { type: 'boolean' },
@@ -65,7 +65,7 @@ export const Coding = defineDocumentType(() => ({
   fields: {
     title: { type: 'string', required: true },
     date: { type: 'date', required: true },
-    categories: { type: 'string'},
+    categories: { type: 'string' },
     tags: { type: 'list', of: { type: 'string' } },
     lastmod: { type: 'date' },
     draft: { type: 'boolean' },
